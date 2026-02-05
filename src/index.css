@@ -10,7 +10,7 @@ body,
 }
 
 /* Remove estilos “starter” do Vite para não atrapalhar o layout do DemoShell */
-body {
+body {  
   margin: 0;
   background: #f8fafc; /* slate-50 */
   color: #0f172a; /* slate-900 */
@@ -25,3 +25,4 @@ body {
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
