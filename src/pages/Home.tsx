@@ -1,10 +1,33 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/auth/useAuth'
+import HeroCarousel from '@/shared/ui/HeroCarousel'
 
 export default function Home() {
   const nav = useNavigate()
   const { profile } = useAuth()
+
+  // Assets (coloque esses arquivos em /public)
+  const BRAND_LOGO = '/brand/logo.png'
+  const HERO_IMAGES = ['/hero/hero-1.jpg', '/hero/hero-2.jpg', '/hero/hero-3.jpg']
+  const ABOUT_IMG_1 = '/home/about-1.jpg'
+  const ABOUT_IMG_2 = '/home/about-2.jpg'
+
+  // Contatos (edite aqui)
+  const CONTACT_NAME = 'Entony Santos'
+  const CONTACT_PHONE_DISPLAY = '+55 (62) 99634-9178'
+  const CONTACT_PHONE_DIGITS = '5562996349178' // só números, com DDI 55
+  const CONTACT_EMAIL = 'entony.santos@grupoener.eng.br'
+  const HQ_ADDRESS = 'Grupo Enersolar Fazenda Caveiras - Rod GO060 Q.01 Sala 03, S/N - 74.445-357, Goiânia - GO'
+
+  const WHATSAPP_LINK = `https://wa.me/${CONTACT_PHONE_DIGITS}`
+  const TEL_LINK = `tel:+${CONTACT_PHONE_DIGITS}`
+  const MAILTO_LINK = `mailto:${CONTACT_EMAIL}`
+
+  const MAP_LINK = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(HQ_ADDRESS)}`
+  const MAP_EMBED = `https://www.google.com/maps?q=${encodeURIComponent(HQ_ADDRESS)}&output=embed`
+
+  const year = new Date().getFullYear()
 
   const loggedInPath = useMemo(() => {
     if (profile?.role === 'DRIVER') return '/driver'
@@ -31,7 +54,6 @@ export default function Home() {
       nav('/admin')
       return
     }
-    // leva para cadastro já “apontando” motorista
     nav('/auth/register?role=DRIVER')
   }
 
@@ -44,34 +66,25 @@ export default function Home() {
       nav('/admin')
       return
     }
-    // leva para cadastro já “apontando” dono de máquina/empresa
     nav('/auth/register?role=SHIPPER')
   }
 
   return (
-    <div className="bg-white text-text-main font-display">
+    <div id="top" className="bg-white text-text-main font-display">
       <header className="sticky top-0 z-50 w-full border-b border-solid border-border-dark bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-[1280px] px-6 lg:px-10 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 text-text-main">
-            <div className="text-primary">
-              <svg className="size-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
-                  fill="currentColor"
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M10.4485 13.8519C10.4749 13.9271 10.6203 14.246 11.379 14.7361C12.298 15.3298 13.7492 15.9145 15.6717 16.3735C18.0007 16.9296 20.8712 17.2655 24 17.2655C27.1288 17.2655 29.9993 16.9296 32.3283 16.3735C34.2508 15.9145 35.702 15.3298 36.621 14.7361C37.3796 14.246 37.5251 13.9271 37.5515 13.8519C37.5287 13.7876 37.4333 13.5973 37.0635 13.2931C36.5266 12.8516 35.6288 12.3647 34.343 11.9175C31.79 11.0295 28.1333 10.4437 24 10.4437C19.8667 10.4437 16.2099 11.0295 13.657 11.9175C12.3712 12.3647 11.4734 12.8516 10.9365 13.2931C10.5667 13.5973 10.4713 13.7876 10.4485 13.8519ZM37.5563 18.7877C36.3176 19.3925 34.8502 19.8839 33.2571 20.2642C30.5836 20.9025 27.3973 21.2655 24 21.2655C20.6027 21.2655 17.4164 20.9025 14.7429 20.2642C13.1498 19.8839 11.6824 19.3925 10.4436 18.7877V34.1275C10.4515 34.1545 10.5427 34.4867 11.379 35.027C12.298 35.6207 13.7492 36.2054 15.6717 36.6644C18.0007 37.2205 20.8712 37.5564 24 37.5564C27.1288 37.5564 29.9993 37.2205 32.3283 36.6644C34.2508 36.2054 35.702 35.6207 36.621 35.027C37.4573 34.4867 37.5485 34.1546 37.5563 34.1275V18.7877ZM41.5563 13.8546V34.1455C41.5563 36.1078 40.158 37.5042 38.7915 38.3869C37.3498 39.3182 35.4192 40.0389 33.2571 40.5551C30.5836 41.1934 27.3973 41.5564 24 41.5564C20.6027 41.5564 17.4164 41.1934 14.7429 40.5551C12.5808 40.0389 10.6502 39.3182 9.20848 38.3869C7.84205 37.5042 6.44365 36.1078 6.44365 34.1455L6.44365 13.8546C6.44365 12.2684 7.37223 11.0454 8.39581 10.2036C9.43325 9.3505 10.8137 8.67141 12.343 8.13948C15.4203 7.06909 19.5418 6.44366 24 6.44366C28.4582 6.44366 32.5797 7.06909 35.657 8.13948C37.1863 8.67141 38.5667 9.3505 39.6042 10.2036C40.6278 11.0454 41.5563 12.2684 41.5563 13.8546Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
+            <img
+              src={BRAND_LOGO}
+              alt="Frete de Retorno"
+              className="h-9 w-9 rounded-lg object-contain"
+              loading="eager"
+            />
             <h2 className="text-xl font-black tracking-tighter uppercase">Frete de Retorno</h2>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a className="text-text-main text-sm font-semibold hover:text-primary transition-colors" href="#">
+            <a className="text-text-main text-sm font-semibold hover:text-primary transition-colors" href="#top">
               Home
             </a>
             <a className="text-text-main text-sm font-semibold hover:text-primary transition-colors" href="#motorista">
@@ -102,23 +115,16 @@ export default function Home() {
         </div>
       </header>
 
+      {/* HERO com carrossel (automático, sem controles) */}
       <section className="relative">
-        <div
-          className="w-full min-h-[700px] flex items-center justify-center bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDALdWL7Xqfz7WRWQL2bK4AzexOGlJWFs5aDi0fzyVLWu8mGcbsWJXYr1gErUcpA7rNtkxsV8jAU9LJTGIWonQQ94j2Z_5rNWJbyB8FJQyuUnFInP3VjiPGthKhdCZG1E2osrGZUMQrMi6unc9PrNEeioytjTGokh8Y_x_WQIbViok1F7E3xZ_w7mOfHSnSLAbewxCpRmDQdd1iGV0u9cwwUXB444oiaRVGtc4v7bBBxYBS2CL1kgQmM5UwjMnAwAL2BJy5CpOP53bo")',
-          }}
-        >
+        <HeroCarousel images={HERO_IMAGES} intervalMs={6500} showControls={false} minHeightClassName="min-h-[700px]">
           <div className="max-w-[960px] px-6 text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-red/10 border border-accent-red/20 mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-red opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-red"></span>
               </span>
-              <span className="text-accent-red text-xs font-bold uppercase tracking-widest">
-                Tecnologia Grupo ENER
-              </span>
+              <span className="text-accent-red text-xs font-bold uppercase tracking-widest">Tecnologia Grupo ENER</span>
             </div>
 
             <h1 className="text-text-main text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6">
@@ -144,7 +150,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-        </div>
+        </HeroCarousel>
       </section>
 
       <div className="py-12 border-y border-border-dark bg-surface-dark">
@@ -234,7 +240,8 @@ export default function Home() {
                   <div>
                     <h4 className="text-text-main text-lg font-bold mb-1">Custo Altamente Reduzido</h4>
                     <p className="text-text-muted">
-                      Ao utilizar caminhões que voltariam vazios, você acessa tarifas muito mais competitivas que o frete convencional.
+                      Ao utilizar caminhões que voltariam vazios, você acessa tarifas muito mais competitivas que o frete
+                      convencional.
                     </p>
                   </div>
                 </div>
@@ -246,7 +253,8 @@ export default function Home() {
                   <div>
                     <h4 className="text-text-main text-lg font-bold mb-1">Agilidade Instantânea</h4>
                     <p className="text-text-muted">
-                      Nossa rede de motoristas em rota de retorno permite envios imediatos sem longas esperas por cotações.
+                      Nossa rede de motoristas em rota de retorno permite envios imediatos sem longas esperas por
+                      cotações.
                     </p>
                   </div>
                 </div>
@@ -257,7 +265,9 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="text-text-main text-lg font-bold mb-1">Especialistas em Carga Pesada</h4>
-                    <p className="text-text-muted">Plataforma dedicada ao transporte de máquinas e equipamentos de grande porte.</p>
+                    <p className="text-text-muted">
+                      Plataforma dedicada ao transporte de máquinas e equipamentos de grande porte.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -266,17 +276,11 @@ export default function Home() {
             <div className="lg:w-1/2 w-full grid grid-cols-2 gap-4">
               <div
                 className="bg-cover bg-center h-80 rounded-2xl border border-border-dark"
-                style={{
-                  backgroundImage:
-                    'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAzP6NDIsbdNJNoFsUknCcP3Y1FLzOOVi5fMeExfUjKPq89wzloxBOzkmi5-ljJhP8Su637DkQiQMS1cM4dhXALlh-PuHE1AvC57PYlMNNLg60DnuWN6FEhP9v8Vt8Uzkdk0AlSuTZ1UJYe-wgfdQvXCPj4lokJ7HYXlh6nXhhb32cKxInQJXmgFU_wnqXNzksV2hEorrUI6ulsknCGBZFywgfsFK9f6tCsh4y11KVqZYT1T6oV7M0bXG6rXjvMFOT1W3hrrIPjTMNf")',
-                }}
+                style={{ backgroundImage: `url("${ABOUT_IMG_1}")` }}
               />
               <div
                 className="bg-cover bg-center h-80 rounded-2xl border border-border-dark mt-8"
-                style={{
-                  backgroundImage:
-                    'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDggyuGbHjLTAbcQXFmQMPcomyu5s9LncmeNRUEnb0AQ29BfFfTyP8EO0Zwhz_g7QXgpgq5sT3DsbgHyEJNQG97SDi1Uu-soTwYVja9ww14Xzym42aaNfpD1xlUK3bAg0fiB3JV7pr3WzoHnJwifG4HzOfe5LlwnEh_eyzuHcLHYgJm127HSEc1oNfeTfN2MemhVHN_pH5_YBNPKfZAt5GwwoNhDwNbXkKKqNc0gKXjBA4u6yG0rO_OF4HxwuVpVQ50DnFrBfpPXuyX")',
-                }}
+                style={{ backgroundImage: `url("${ABOUT_IMG_2}")` }}
               />
             </div>
           </div>
@@ -288,8 +292,24 @@ export default function Home() {
           <div className="relative rounded-3xl bg-surface-dark border border-border-dark p-8 md:p-16 flex flex-col lg:flex-row gap-12 items-center">
             <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
               <svg className="w-full h-full text-primary fill-current" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" fill="none" r="40" stroke="currentColor" strokeDasharray="2 2" strokeWidth="0.5" />
-                <circle cx="50" cy="50" fill="none" r="30" stroke="currentColor" strokeDasharray="4 4" strokeWidth="0.5" />
+                <circle
+                  cx="50"
+                  cy="50"
+                  fill="none"
+                  r="40"
+                  stroke="currentColor"
+                  strokeDasharray="2 2"
+                  strokeWidth="0.5"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  fill="none"
+                  r="30"
+                  stroke="currentColor"
+                  strokeDasharray="4 4"
+                  strokeWidth="0.5"
+                />
                 <circle cx="50" cy="50" fill="none" r="20" stroke="currentColor" strokeWidth="0.5" />
               </svg>
             </div>
@@ -317,7 +337,9 @@ export default function Home() {
             <div className="lg:w-1/2 flex justify-center">
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
-                <span className="material-symbols-outlined text-[160px] text-primary relative z-10 opacity-90">hub</span>
+                <span className="material-symbols-outlined text-[160px] text-primary relative z-10 opacity-90">
+                  hub
+                </span>
               </div>
             </div>
           </div>
@@ -329,14 +351,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-3 text-text-main">
-                <div className="text-primary">
-                  <svg className="size-6" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </div>
+                <img
+                  src={BRAND_LOGO}
+                  alt="Frete de Retorno"
+                  className="h-8 w-8 rounded-lg object-contain"
+                  loading="lazy"
+                />
                 <h2 className="text-lg font-black tracking-tighter uppercase">Frete de Retorno</h2>
               </div>
 
@@ -347,15 +367,19 @@ export default function Home() {
               <div className="flex gap-4">
                 <a
                   className="size-10 rounded-lg bg-white border border-border-dark flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all"
-                  href="#"
+                  href={WHATSAPP_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="WhatsApp"
                 >
-                  <span className="material-symbols-outlined text-xl">share</span>
+                  <span className="material-symbols-outlined text-xl">chat</span>
                 </a>
                 <a
                   className="size-10 rounded-lg bg-white border border-border-dark flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all"
-                  href="#"
+                  href={MAILTO_LINK}
+                  title="Email"
                 >
-                  <span className="material-symbols-outlined text-xl">camera</span>
+                  <span className="material-symbols-outlined text-xl">mail</span>
                 </a>
               </div>
             </div>
@@ -363,10 +387,26 @@ export default function Home() {
             <div>
               <h5 className="text-text-main font-bold mb-6">Navegação</h5>
               <ul className="space-y-4">
-                <li><a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Home</a></li>
-                <li><a className="text-text-muted hover:text-primary text-sm transition-colors" href="#motorista">Donos de Caminhões</a></li>
-                <li><a className="text-text-muted hover:text-primary text-sm transition-colors" href="#carga">Donos de Equipamentos</a></li>
-                <li><a className="text-text-muted hover:text-primary text-sm transition-colors" href="#sobre">Sobre Nós</a></li>
+                <li>
+                  <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#top">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#motorista">
+                    Donos de Caminhões
+                  </a>
+                </li>
+                <li>
+                  <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#carga">
+                    Donos de Equipamentos
+                  </a>
+                </li>
+                <li>
+                  <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#sobre">
+                    Sobre Nós
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -375,15 +415,32 @@ export default function Home() {
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-text-muted text-sm">
                   <span className="material-symbols-outlined text-primary text-base">person</span>
-                  Entony Santos
+                  {CONTACT_NAME}
                 </li>
+
                 <li className="flex items-center gap-3 text-text-muted text-sm">
                   <span className="material-symbols-outlined text-primary text-base">phone</span>
-                  +55 (62) 9999-9999
+
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-primary transition-colors"
+                    title="Abrir WhatsApp"
+                  >
+                    {CONTACT_PHONE_DISPLAY}
+                  </a>
+
+                  <a href={TEL_LINK} className="ml-2 text-xs underline hover:text-text-main" title="Ligar">
+                    Ligar
+                  </a>
                 </li>
+
                 <li className="flex items-center gap-3 text-text-muted text-sm">
                   <span className="material-symbols-outlined text-primary text-base">mail</span>
-                  contato@fretederetorno.com.br
+                  <a href={MAILTO_LINK} className="hover:text-primary transition-colors">
+                    {CONTACT_EMAIL}
+                  </a>
                 </li>
               </ul>
             </div>
@@ -392,24 +449,44 @@ export default function Home() {
               <h5 className="text-text-main font-bold mb-6">Sede Operacional</h5>
               <div className="flex gap-3 text-text-muted text-sm">
                 <span className="material-symbols-outlined text-primary text-base">location_on</span>
-                <p>Avenida Logística, 1234<br />Goiânia - GO, 74000-000</p>
+                <a href={MAP_LINK} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">
+                  {HQ_ADDRESS.split(' - ')[0]}
+                  <br />
+                  {HQ_ADDRESS.split(' - ').slice(1).join(' - ')}
+                </a>
               </div>
 
-              <div className="mt-6 w-full h-24 rounded-lg bg-white overflow-hidden border border-border-dark">
-                <div className="w-full h-full bg-slate-50">
-                  <div className="w-full h-full flex items-center justify-center opacity-10">
-                    <span className="material-symbols-outlined text-4xl text-text-main">map</span>
-                  </div>
-                </div>
+              <div className="mt-6 w-full h-24 rounded-lg bg-white overflow-hidden border border-border-dark relative">
+                <iframe
+                  title="Mapa - Sede Operacional"
+                  src={MAP_EMBED}
+                  className="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+                <a
+                  href={MAP_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="absolute inset-0"
+                  aria-label="Abrir sede no Google Maps"
+                  title="Abrir no Google Maps"
+                />
               </div>
             </div>
           </div>
 
           <div className="pt-8 border-t border-border-dark flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-text-muted text-xs">© 2024 Frete de Retorno by Grupo ENER. Todos os direitos reservados.</p>
+            <p className="text-text-muted text-xs">
+              © {year} Frete de Retorno by Grupo ENER. Todos os direitos reservados.
+            </p>
             <div className="flex gap-6">
-              <a className="text-text-muted hover:text-text-main text-xs" href="#">Política de Privacidade</a>
-              <a className="text-text-muted hover:text-text-main text-xs" href="#">Termos de Uso</a>
+              <a className="text-text-muted hover:text-text-main text-xs" href="#">
+                Política de Privacidade
+              </a>
+              <a className="text-text-muted hover:text-text-main text-xs" href="#">
+                Termos de Uso
+              </a>
             </div>
           </div>
         </div>

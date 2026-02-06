@@ -31,9 +31,12 @@ export default function AppShell({
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold">
-              FR
-            </div>
+                        <img
+              src="/brand/logo.png"
+              alt="Frete de Retorno"
+              className="h-9 w-9 rounded-xl bg-white border border-slate-200 object-contain p-1"
+            />
+
             <div>
               <div className="font-semibold leading-tight">
                 {title ?? 'Frete de Retorno'}
