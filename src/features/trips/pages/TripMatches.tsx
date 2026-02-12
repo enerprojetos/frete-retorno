@@ -21,6 +21,9 @@ import {
   type MatchRequestDetail,
 } from '@/features/matches/api/matchRequestService'
 
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
+
 type LatLng = { lat: number; lng: number }
 
 /**
@@ -607,22 +610,23 @@ export default function TripMatches() {
                 <div className="mt-3 grid gap-2 sm:grid-cols-2 text-sm">
                   <div className="rounded-xl bg-slate-50 p-3">
                     <div className="text-xs text-slate-500">1) Início</div>
-                    <div className="font-medium text-slate-800 break-words">{tripInfo?.origin_label ?? '—'}</div>
+                    <div className="font-medium text-slate-800 break-words">{compactPlaceLabelOr(tripInfo?.origin_label, '—')}</div>
                   </div>
 
                   <div className="rounded-xl bg-slate-50 p-3">
                     <div className="text-xs text-slate-500">2) Coleta</div>
-                    <div className="font-medium text-slate-800 break-words">{f?.pickup_label ?? '—'}</div>
+                    <div className="font-medium text-slate-800 break-words">{compactPlaceLabelOr(f?.pickup_label ?? '—')}</div>
                   </div>
 
                   <div className="rounded-xl bg-slate-50 p-3">
                     <div className="text-xs text-slate-500">3) Entrega</div>
-                    <div className="font-medium text-slate-800 break-words">{f?.dropoff_label ?? '—'}</div>
+                    <div className="font-medium text-slate-800 break-words">{compactPlaceLabelOr(f?.dropoff_label ?? '—')}</div>
                   </div>
 
                   <div className="rounded-xl bg-slate-50 p-3">
                     <div className="text-xs text-slate-500">4) Final</div>
-                    <div className="font-medium text-slate-800 break-words">{tripInfo?.destination_label ?? '—'}</div>
+                    <div className="font-medium text-slate-800 break-words"><div>{compactPlaceLabelOr(tripInfo?.destination_label, '—')}</div>
+</div>
                   </div>
                 </div>
               </div>
@@ -670,7 +674,7 @@ export default function TripMatches() {
           const req = requestsByFreightId[m.freight_id] ?? null
           const reqStatus = req?.status ?? null
 
-          const title = `${f?.pickup_label ?? 'Origem'} → ${f?.dropoff_label ?? 'Destino'}`
+          const title = `${compactPlaceLabelOr(f?.pickup_label, 'Origem')} → ${compactPlaceLabelOr(f?.dropoff_label, 'Destino')}`
           const freightOpen = (f?.status ?? 'OPEN') === 'OPEN'
 
           const canPropose = !reqStatus || reqStatus === 'REJECTED' || reqStatus === 'CANCELLED'

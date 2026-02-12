@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import AppShell from '@/shared/ui/AppShell'
 import { supabase } from '@/shared/lib/supabaseClient'
 import { listMyTrips, type TripRow } from '@/features/trips/api/tripsService'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
 
 type Stats = { openTrips: number; pendingRequests: number; acceptedRequests: number }
 
@@ -130,7 +132,7 @@ export default function DriverDashboard() {
               >
                 <div className="min-w-0">
                   <div className="font-medium break-words sm:truncate">
-                    {t.origin_label ?? 'Origem'} → {t.destination_label ?? 'Destino'}
+                    {compactPlaceLabelOr(t.origin_label, 'Origem')} → {compactPlaceLabelOr(t.destination_label, 'Destino')}
                   </div>
 
                   <div className="text-xs text-slate-500 break-words">

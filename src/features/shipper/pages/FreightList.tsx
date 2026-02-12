@@ -8,6 +8,8 @@ import {
   type FreightStatus,
   type FreightUiRow,
 } from '@/features/freights/api/freightsService'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
 
 function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(' ')
@@ -174,7 +176,7 @@ export default function FreightList() {
         <div className="grid gap-3">
           {rows.map((r) => {
             const s = (r.status ?? 'OPEN') as FreightStatus
-            const title = `${r.pickup_label ?? 'Origem'} → ${r.dropoff_label ?? 'Destino'}`
+            const title = `${compactPlaceLabelOr(r.pickup_label, 'Origem')} → ${compactPlaceLabelOr(r.dropoff_label, 'Destino')}`
             const isExpanded = !!expanded[r.id]
 
             return (

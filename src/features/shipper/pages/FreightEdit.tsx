@@ -10,6 +10,8 @@ import {
   updateFreight,
   type FreightStatus,
 } from '@/features/freights/api/freightsService'
+import { compactPlaceLabel } from '@/shared/lib/placeLabel'
+
 
 type Place = { label: string; lat: number; lng: number }
 
@@ -44,8 +46,8 @@ export default function FreightEdit() {
       try {
         const f = await getFreightById(id)
         setStatus((f.status ?? 'OPEN') as FreightStatus)
-        setPickup({ label: f.pickup_label, lat: f.pickup_lat, lng: f.pickup_lng })
-        setDropoff({ label: f.dropoff_label, lat: f.dropoff_lat, lng: f.dropoff_lng })
+        setPickup({ label: compactPlaceLabel(f.pickup_label), lat: f.pickup_lat, lng: f.pickup_lng })
+        setDropoff({ label: compactPlaceLabel(f.dropoff_label), lat: f.dropoff_lat, lng: f.dropoff_lng })
         setPickupRadiusKm(mToKmRounded(f.pickup_radius_m, 50))
         setDropoffRadiusKm(mToKmRounded(f.dropoff_radius_m, 50))
         setNotes(f.notes ?? '')

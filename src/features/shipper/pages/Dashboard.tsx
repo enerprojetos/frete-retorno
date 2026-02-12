@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
 import AppShell from '@/shared/ui/AppShell'
 import { supabase } from '@/shared/lib/supabaseClient'
 import { listMyFreights, type FreightUiRow } from '@/features/freights/api/freightsService'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
 
 type Stats = { openFreights: number; pendingRequests: number }
 
@@ -113,7 +113,7 @@ export default function ShipperDashboard() {
               >
                 <div className="min-w-0">
                   <div className="font-medium break-words sm:truncate">
-                    {r.pickup_label ?? 'Origem'} → {r.dropoff_label ?? 'Destino'}
+                    {compactPlaceLabelOr(r.pickup_label, 'Origem')} → {compactPlaceLabelOr(r.dropoff_label, 'Destino')}
                   </div>
 
                   {r.notes ? (

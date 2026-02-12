@@ -5,6 +5,8 @@ import AppShell from '@/shared/ui/AppShell'
 import { useAuth } from '@/auth/useAuth'
 import { supabase } from '@/shared/lib/supabaseClient'
 import { listMyTrips, type TripRow } from '@/features/trips/api/tripsService'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
 
 type Stats = {
   openTrips: number
@@ -134,7 +136,7 @@ export default function DriverHome() {
               <div key={t.id} className="rounded-xl border p-3 flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="font-medium truncate">
-                    {t.origin_label ?? 'Origem'} → {t.destination_label ?? 'Destino'}
+                    {compactPlaceLabelOr(t.origin_label, 'Origem')} → {compactPlaceLabelOr(t.destination_label, 'Destino')}
                   </div>
                   <div className="text-xs text-slate-500">
                     Status: {t.status} • Corredor: {(t.corridor_radius_m / 1000).toFixed(0)} km

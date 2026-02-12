@@ -6,6 +6,8 @@ import PlaceAutocomplete from '@/shared/ui/PlaceAutocomplete'
 import MapPicker from '@/shared/ui/MapPicker'
 import { useAuth } from '@/auth/useAuth'
 import { cancelTrip, getTripById, updateTripViaFunction, type TripRow } from '@/features/trips/api/tripsService'
+import { compactPlaceLabel } from '@/shared/lib/placeLabel'
+
 
 type Place = { label: string; lat: number; lng: number }
 
@@ -41,8 +43,8 @@ export default function TripEdit() {
       try {
         const t = await getTripById(tripId)
         setStatus(t.status ?? 'OPEN')
-        setOrigin({ label: t.origin_label, lat: t.origin_lat, lng: t.origin_lng })
-        setDestination({ label: t.destination_label, lat: t.destination_lat, lng: t.destination_lng })
+        setOrigin({ label: compactPlaceLabel(t.origin_label), lat: t.origin_lat, lng: t.origin_lng })
+        setDestination({ label: compactPlaceLabel(t.destination_label), lat: t.destination_lat, lng: t.destination_lng })
         setCorridorKm(Math.max(10, Math.round((t.corridor_radius_m ?? 50000) / 1000)))
         setRouteProfile((t.profile ?? 'driving-hgv') as any)
       } catch (e: any) {

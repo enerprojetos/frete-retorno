@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
 import AppShell from '@/shared/ui/AppShell'
 import { useAuth } from '@/auth/useAuth'
 import { supabase } from '@/shared/lib/supabaseClient'
 import { listMyFreights, type FreightUiRow } from '@/features/freights/api/freightsService'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
 
 type Stats = {
   openFreights: number
@@ -113,7 +114,7 @@ export default function ShipperHome() {
               <div key={r.id} className="rounded-xl border p-3 flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="font-medium truncate">
-                    {r.pickup_label ?? 'Origem'} → {r.dropoff_label ?? 'Destino'}
+                    {compactPlaceLabelOr(r.pickup_label, 'Origem')} → {compactPlaceLabelOr(r.dropoff_label, 'Destino')}
                   </div>
                   {r.notes ? <div className="text-xs text-slate-500 truncate">{r.notes}</div> : null}
                 </div>

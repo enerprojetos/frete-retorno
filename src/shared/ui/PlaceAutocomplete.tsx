@@ -1,9 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { compactPlaceLabel } from '@/shared/lib/placeLabel'
+
+type NominatimAddress = {
+  city?: string
+  town?: string
+  village?: string
+  municipality?: string
+  county?: string
+  state?: string
+  state_code?: string
+  [k: string]: string | undefined
+}
 
 type Place = {
   display_name: string
   lat: string
   lon: string
+  address?: NominatimAddress
 }
 
 type Value = { label: string; lat: number; lng: number }
@@ -25,7 +38,8 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 }
 
 export default function PlaceAutocomplete({ label, placeholder, value, onChange }: Props) {
-  const [q, setQ] = useState(value?.label ?? '')
+  // ✅ mostra sempre compacto no input (inclusive se vier label antigo do banco)
+  const [q, setQ] = useState(compactPlaceLabel(value?.label ?? ''))
   const debouncedQ = useDebouncedValue(q, 350)
 
   const [items, setItems] = useState<Place[]>([])
@@ -35,10 +49,40 @@ export default function PlaceAutocomplete({ label, placeholder, value, onChange 
 
   const boxRef = useRef<HTMLDivElement | null>(null)
 
-  // ✅ Se o "value" vem de fora (ex.: reset do form), mantém o input sincronizado.
   useEffect(() => {
-    setQ(value?.label ?? '')
+    setQ(compactPlaceLabel(value?.label ?? ''))
   }, [value?.label])
+
+  function formatFromNominatim(p: Place): string {
+    const addr = p.address
+
+    const city =
+      addr?.city ??
+      addr?.town ??
+      addr?.village ??
+      addr?.municipality ??
+      addr?.county ??
+      p.display_name.split(',')[0]?.trim()
+
+    // UF via ISO BR-XX dentro do address
+    let uf: string | null = null
+    if (addr) {
+      for (const v of Object.values(addr)) {
+        const m = (v ?? '').match(/^BR-([A-Z]{2})$/)
+        if (m?.[1]) {
+          uf = m[1]
+          break
+        }
+      }
+      if (!uf && addr.state_code && addr.state_code.length === 2) uf = addr.state_code.toUpperCase()
+      if (!uf && addr.state) uf = compactPlaceLabel(addr.state).split('/')[1]?.trim() ?? null
+    }
+
+    if (city && uf) return `${city} / ${uf}`
+
+    // fallback: compacta display_name
+    return compactPlaceLabel(p.display_name)
+  }
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -71,7 +115,7 @@ export default function PlaceAutocomplete({ label, placeholder, value, onChange 
             format: 'jsonv2',
             q: text,
             limit: '6',
-            addressdetails: '0',
+            addressdetails: '1', // ✅ mudança principal
             countrycodes: 'br',
           }).toString()
 
@@ -82,7 +126,6 @@ export default function PlaceAutocomplete({ label, placeholder, value, onChange 
           },
         })
 
-        // ✅ Se bloquear / rate limit / etc, a gente mostra o erro
         if (!resp.ok) {
           const raw = await resp.text().catch(() => '')
           const msg = `Erro no autocomplete (HTTP ${resp.status})`
@@ -135,7 +178,7 @@ export default function PlaceAutocomplete({ label, placeholder, value, onChange 
   function pick(p: Place) {
     const lat = Number(p.lat)
     const lng = Number(p.lon)
-    const lbl = p.display_name
+    const lbl = formatFromNominatim(p)
 
     onChange({ label: lbl, lat, lng })
     setQ(lbl)
@@ -185,7 +228,8 @@ export default function PlaceAutocomplete({ label, placeholder, value, onChange 
                     className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
                     onClick={() => pick(p)}
                   >
-                    <div className="line-clamp-2">{p.display_name}</div>
+                    <div className="font-medium line-clamp-1">{formatFromNominatim(p)}</div>
+                    <div className="text-xs text-slate-500 mt-1 line-clamp-1">{p.display_name}</div>
                     <div className="text-xs text-slate-500 mt-1">
                       lat {Number(p.lat).toFixed(5)} • lng {Number(p.lon).toFixed(5)}
                     </div>

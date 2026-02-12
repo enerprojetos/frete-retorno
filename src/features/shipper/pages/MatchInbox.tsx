@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import AppShell from '@/shared/ui/AppShell'
 import { supabase } from '@/shared/lib/supabaseClient'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
 
 type Row = {
   id: string
@@ -65,11 +67,11 @@ export default function MatchInbox() {
               </div>
 
               <div className="text-sm text-slate-700">
-                Viagem: <strong>{r.trip_origin_label}</strong> → <strong>{r.trip_destination_label}</strong>
+                Viagem: <strong>{compactPlaceLabelOr(r.trip_origin_label, 'Origem')}</strong> → <strong>{compactPlaceLabelOr(r.trip_destination_label, 'Destino')}</strong>
               </div>
 
               <div className="text-sm text-slate-700">
-                Frete: <strong>{r.freight_pickup_label}</strong> → <strong>{r.freight_dropoff_label}</strong>
+                Frete: <strong>{compactPlaceLabelOr(r.freight_pickup_label, 'Origem')}</strong> → <strong>{compactPlaceLabelOr(r.freight_dropoff_label, 'Destino')}</strong>
               </div>
 
               <div className="flex gap-2 pt-1">

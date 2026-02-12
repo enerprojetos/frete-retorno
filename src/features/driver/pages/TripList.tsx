@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import AppShell from '@/shared/ui/AppShell'
 import { cancelTrip, listMyTrips, type TripRow } from '@/features/trips/api/tripsService'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
+
 
 function km(m: number | null | undefined) {
   if (!m || m <= 0) return '—'
@@ -147,7 +149,7 @@ export default function TripList() {
         <div className="grid gap-3">
           {rows.map((r) => {
             const s = (r.status ?? 'OPEN') as 'OPEN' | 'CANCELLED'
-            const title = `${r.origin_label ?? 'Origem'} → ${r.destination_label ?? 'Destino'}`
+            const title = `${compactPlaceLabelOr(r.origin_label, 'Origem')} → ${compactPlaceLabelOr(r.destination_label, 'Destino')}`
 
             return (
               <div key={r.id} className="rounded-2xl border bg-white p-4 overflow-hidden">

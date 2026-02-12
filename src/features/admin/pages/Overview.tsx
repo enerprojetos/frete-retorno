@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '@/shared/lib/supabaseClient'
 import AppShell from '@/shared/ui/AppShell'
+import { compactPlaceLabelOr } from '@/shared/lib/placeLabel'
 
 type FreightRow = {
   id: string
@@ -206,7 +207,7 @@ export default function AdminOverview() {
                   title="Abrir/editar frete"
                 >
                   <div className="font-medium">
-                    {r.pickup_label} → {r.dropoff_label}
+                    {compactPlaceLabelOr(r.pickup_label, 'Origem')} → {compactPlaceLabelOr(r.dropoff_label, 'Destino')}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     Status: {r.status} • Shipper: {r.shipper_id.slice(0, 8)}… • {String(r.created_at).slice(0, 10)}
@@ -239,7 +240,7 @@ export default function AdminOverview() {
                   title="Abrir matches desta viagem"
                 >
                   <div className="font-medium">
-                    {r.origin_label} → {r.destination_label}
+                    {compactPlaceLabelOr(r.origin_label, 'Origem')} → {compactPlaceLabelOr(r.destination_label, 'Destino')}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     Status: {r.status} • Driver: {r.driver_id.slice(0, 8)}… • {km(r.route_distance_m)} • {h(r.route_duration_s)}
